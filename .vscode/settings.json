@@ -1,0 +1,41 @@
+{
+  "dotnet.defaultSolution": "CMS_NetApi.sln",
+  
+  // Editor general
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.rulers": [120],
+  "editor.trimAutoWhitespace": true,
+  "editor.renderWhitespace": "boundary",
+  
+  // Acciones al guardar
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  
+  // C# específico
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp",
+    "editor.formatOnSave": true,
+    "editor.semanticHighlighting.enabled": true
+  },
+  
+  // Archivos a excluir
+  "files.exclude": {
+    "**/bin": true,
+    "**/obj": true,
+    "**/node_modules": true,
+    "**/.vs": true,
+    "**/*.user": true,
+    "**/*.suo": true,
+    "**/*.pidb": true,
+    "**/*.unityproj": true
+  },
+  
+  // Terminal
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  
+  // Git
+  "git.autofetch": true,
+  "git.confirmSync": false
+}

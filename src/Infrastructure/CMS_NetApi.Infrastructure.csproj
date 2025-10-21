@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Application\CMS_NetApi.Application.csproj" />
+    <ProjectReference Include="..\Core\Domain\CMS_NetApi.Domain.csproj" />
+    <ProjectReference Include="..\Core\Shared\CMS_NetApi.Shared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

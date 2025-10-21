@@ -1,0 +1,114 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Run API",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "src/Presentation/CMS_NetApi.Web.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "detail": "Ejecuta la API en modo desarrollo"
+    },
+    {
+      "label": "🔨 Build Solution",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      },
+      "detail": "Compila toda la solución"
+    },
+    {
+      "label": "👀 Watch & Run API",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "src/Presentation/CMS_NetApi.Web.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "detail": "Ejecuta la API con hot reload (watch)"
+    },
+    {
+      "label": "🧪 Run Tests",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "test"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "detail": "Ejecuta todos los tests"
+    },
+    {
+      "label": "🧹 Clean Solution",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "clean"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "detail": "Limpia binarios y objetos de compilación"
+    },
+    {
+      "label": "📦 Restore Packages",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "restore"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "detail": "Restaura paquetes NuGet"
+    },
+    {
+      "label": "🎯 Build & Run API",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "🔨 Build Solution",
+        "🚀 Run API"
+      ],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      },
+      "detail": "Compila y luego ejecuta la API"
+    }
+  ]
+}
