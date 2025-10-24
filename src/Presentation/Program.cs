@@ -1,41 +1,27 @@
+using CMS_NetApi.Presentation.Extensions;
+using CMS_NetApi.Presentation.Conventions;
+using CMS_NetApi.Infrastructure;
+using CMS_NetApi.Application;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// 1. Cargar .env si existe
+builder.LoadEnv();
 
+// 2. Ensamblar configuración (env primero, luego JSON)
+var cfg = builder.Configuration;
+
+// 3. Registrar capas
+builder.Services.AddInfrastructure(cfg);   // JWT, Mongo, repos, servicios
+builder.Services.AddApplication();         // MediatR, AutoMapper, validaciones
+builder.Services.AddControllers(options =>{options.Conventions.Add(new ApiRoutePrefixConvention("api"));});
+builder.Services.AddEndpointsApiExplorer();
+// 4. Middlewares de API (organizados en Extensions)
+builder.Services.AddSwagger();
+builder.Services.AddCorsPolicy(cfg);
+builder.Services.AddJwtAuthentication(cfg);
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
+// 5. Pipeline HTTP (orden claro y único)
+app.UseApiPipeline();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
