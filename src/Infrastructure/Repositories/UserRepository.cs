@@ -8,27 +8,27 @@ using AutoMapper;
 
 namespace CMS_NetApi.Infrastructure.Repositories;
 
-public class UsuarioRepository(MongoDbContext context, IMapper mapper) : IUsuarioRepository
+public class UserRepository(MongoDbContext context, IMapper mapper) : IUserRepository
 {
     private readonly IMongoCollection<UserMongo> _user = context.Usuarios;
     private readonly IMapper _mapper = mapper;
     
 
-    public async Task<User?> GetByEmailAsync(string email, CancellationToken ct = default)
+    public async Task<User?> GetUserByEmailAsync(string email, CancellationToken ct = default)
     {
         var mongo = await _user.Find(x => x.Email == email)
                               .FirstOrDefaultAsync(ct);
         return mongo is null ? null : _mapper.Map<User>(mongo);
     }
 
-    public async Task<User?> GetByIdAsync(string id, CancellationToken ct = default)
+    public async Task<User?> GetUserByIdAsync(string id, CancellationToken ct = default)
     {
         var mongo = await _user.Find(x => x.Id == id)
                               .FirstOrDefaultAsync(ct);
         return mongo is null ? null : _mapper.Map<User>(mongo);
     }
 
-    public async Task AddAsync(User usuario, CancellationToken ct = default)
+    public async Task AddUserAsync(User usuario, CancellationToken ct = default)
     {
         var mongo = _mapper.Map<UserMongo>(usuario);
 
@@ -37,13 +37,13 @@ public class UsuarioRepository(MongoDbContext context, IMapper mapper) : IUsuari
         await _user.InsertOneAsync(mongo, cancellationToken: ct);
     }
 
-    public async Task UpdateAsync(User usuario, CancellationToken ct = default)
+    public async Task UpdateUserAsync(User usuario, CancellationToken ct = default)
     {
         var mongo = _mapper.Map<UserMongo>(usuario);
         await _user.ReplaceOneAsync(x => x.Id == mongo.Id, mongo, cancellationToken: ct);
     }
 
-    public async Task DeleteAsync(string id, CancellationToken ct = default)
+    public async Task DeleteUserAsync(string id, CancellationToken ct = default)
     {
         await _user.DeleteOneAsync(x => x.Id == id, cancellationToken: ct);
     }

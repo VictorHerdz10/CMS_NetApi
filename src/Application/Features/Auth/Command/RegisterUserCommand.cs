@@ -11,9 +11,9 @@ using CMS_NetApi.Application.Exceptions;
 
 namespace CMS_NetApi.Application.Features.Auth.Command;
 
-public record RegistrarUsuarioCommand(UsuarioRequest Datos) : IRequest<UsuarioResponse>;
+public record RegisterUserCommand(UsuarioRequest Datos) : IRequest<string>;
 
-public class RegistrarUsuarioValidator : AbstractValidator<RegistrarUsuarioCommand>
+public class RegistrarUsuarioValidator : AbstractValidator<RegisterUserCommand>
 {
     public RegistrarUsuarioValidator()
     {
@@ -30,17 +30,17 @@ public class RegistrarUsuarioValidator : AbstractValidator<RegistrarUsuarioComma
     }
 }
 
-internal sealed class RegistrarUsuarioCommandHandler(
-    IUsuarioRepository repo,
+internal sealed class RegisterUserCommandHandler(
+    IUserRepository repo,
     IMapper mapper,
-    IPasswordHasher hasher) : IRequestHandler<RegistrarUsuarioCommand, UsuarioResponse>
+    IPasswordHasher hasher) : IRequestHandler<RegisterUserCommand, string>
 {
-    public async Task<UsuarioResponse> Handle(
-        RegistrarUsuarioCommand cmd,
+    public async Task<string> Handle(
+        RegisterUserCommand cmd,
         CancellationToken ct)
     {
         // 1. ¿Existe email?
-        if (await repo.GetByEmailAsync(cmd.Datos.Email, ct) is not null)
+        if (await repo.GetUserByEmailAsync(cmd.Datos.Email, ct) is not null)
             throw new ConflictException("Email ya registrado");
 
         // 2. Crear entidad
@@ -56,9 +56,9 @@ internal sealed class RegistrarUsuarioCommandHandler(
         };
 
         // 5. Persistir
-        await repo.AddAsync(user, ct);
+        await repo.AddUserAsync(user, ct);
 
         // 6. Respuesta
-        return mapper.Map<UsuarioResponse>(user);
+        return "Usuario registrado exitosamente";
     }
 }
