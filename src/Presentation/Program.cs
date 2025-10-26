@@ -2,6 +2,7 @@ using CMS_NetApi.Presentation.Extensions;
 using CMS_NetApi.Presentation.Conventions;
 using CMS_NetApi.Infrastructure;
 using CMS_NetApi.Application;
+using CMS_NetApi.Presentation.Profiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.LoadEnv();
 
 // 2. Ensamblar configuración (env primero, luego JSON)
 var cfg = builder.Configuration;
+builder.Services.AddAutoMapper(typeof(AuthDtoMapper));
 
 // 3. Registrar capas
 builder.Services.AddInfrastructure(cfg);   // JWT, Mongo, repos, servicios
