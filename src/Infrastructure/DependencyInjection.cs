@@ -29,7 +29,7 @@ public static class DependencyInjection
             new MongoDbContext(connStr, dbName));
 
         // 4. Servicios y repos
-        services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }
