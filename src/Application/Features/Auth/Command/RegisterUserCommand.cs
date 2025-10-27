@@ -17,12 +17,14 @@ public class RegistrarUsuarioValidator : AbstractValidator<RegisterUserCommand>
 {
     public RegistrarUsuarioValidator()
     {
-        RuleFor(c => c.Datos.Nombre)
-            .NotEmpty().WithMessage("El nombre es obligatorio");
+         RuleFor(c => c.Datos.Nombre)
+            .NotEmpty().WithMessage("El nombre es obligatorio")
+            .MaximumLength(100).WithMessage("El nombre no puede exceder 100 caracteres");
 
         RuleFor(c => c.Datos.Email)
-            .NotEmpty().WithMessage("Email obligatorio")
-            .EmailAddress().WithMessage("Formato de email inválido");
+            .NotEmpty().WithMessage("El email es obligatorio")
+            .EmailAddress().WithMessage("Formato de email inválido")
+            .MaximumLength(150).WithMessage("El email no puede exceder 150 caracteres");
 
         RuleFor(c => c.Datos.Password)
             .NotEmpty().WithMessage("Contraseña obligatoria")
