@@ -2,6 +2,7 @@ using AutoMapper;
 using CMS_NetApi.Application.Features.Auth.Command;
 using CMS_NetApi.Application.Models.UserCommand;
 using CMS_NetApi.Presentation.Dtos.Request;
+using CMS_NetApi.Presentation.Dtos.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ public class UserController(ISender mediator, IMapper mapper) : ControllerBase
     /// <remarks>
     /// Ejemplo de solicitud:
     /// 
-    ///     POST /auth/register
+    ///     POST /api/auth/register
     ///     {
     ///         "nombre": "Juan Pérez",
     ///         "email": "usuario@ejemplo.com",
@@ -34,16 +35,53 @@ public class UserController(ISender mediator, IMapper mapper) : ControllerBase
     /// <response code="409">El email ya está registrado en el sistema</response>
     /// <response code="500">Error interno del servidor</response>
     [HttpPost("register")]
-    [ProducesResponseType(typeof(object), 201)]
-    [ProducesResponseType(typeof(object), 400)]
-    [ProducesResponseType(typeof(object), 409)]
-    [ProducesResponseType(typeof(object), 500)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Registrar(
         [FromBody] RegisterRequestDto dto,
         CancellationToken ct)
     {
         var command = new RegisterUserCommand(mapper.Map<UsuarioRequest>(dto));
         var response = await mediator.Send(command, ct);
-        return StatusCode(201, new { message = response });
+        return StatusCode(StatusCodes.Status201Created, new { message = response });
+    }
+
+
+    /// <summary>
+    /// Inicia sesión de usuario en el sistema
+    /// </summary>
+    /// <remarks>
+    /// Ejemplo de solicitud:
+    /// 
+    ///     POST /api/auth/login
+    ///     {
+    ///         "email": "usuario@ejemplo.com",
+    ///         "password": "MiContraseñaSegura123"
+    ///     }
+    /// </remarks>
+    /// <param name="dto">Credenciales de inicio de sesión</param>
+    /// <param name="cancellationToken">Token de cancelación</param>
+    /// <returns>Token JWT de autenticación</returns>
+    /// <response code="200">Inicio de sesión exitoso</response>
+    /// <response code="400">Error de validación - Datos de entrada inválidos</response>
+    /// <response code="401">Credenciales incorrectas</response>
+    /// <response code="404">Usuario no encontrado</response>
+    /// <response code="500">Error interno del servidor</response>
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Login(
+        [FromBody] LoginRequestDto dto,
+        CancellationToken cancellationToken)
+    {
+        var command = new LoginUserCommand(mapper.Map<LoginRequest>(dto));
+        var token = await mediator.Send(command, cancellationToken);
+
+        return Ok(new AuthResponse { Token = token });
     }
 }
