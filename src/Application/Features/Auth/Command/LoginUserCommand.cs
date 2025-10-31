@@ -5,7 +5,6 @@ using CMS_NetApi.Domain.Interfaces;
 using CMS_NetApi.Application.Models.UserCommand;
 using FluentValidation;
 using MediatR;
-using AutoMapper;
 using CMS_NetApi.Application.Exceptions;
 
 
@@ -29,7 +28,6 @@ public class LoginValidator : AbstractValidator<LoginUserCommand>
 internal sealed class LoginUserCommandHandler(
     IUserRepository userRepository,
     IJwtService jwtService,
-    IMapper mapper,
     IPasswordHasher passwordHasher) :
     IRequestHandler<LoginUserCommand, string>
 {
@@ -44,8 +42,7 @@ internal sealed class LoginUserCommandHandler(
         if (!passwordHasher.Verify(command.Datos.Password, user.Password))
             throw new BadRequestException("La contraseña es incorrecta");
 
-        var userMapped = mapper.Map<User>(user);
-        var token = jwtService.GenerarToken(userMapped);
+        var token = jwtService.GenerarToken(user);
 
         return token;
     }
