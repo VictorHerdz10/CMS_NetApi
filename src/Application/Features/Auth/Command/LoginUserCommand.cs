@@ -33,23 +33,19 @@ internal sealed class LoginUserCommandHandler(
     IPasswordHasher passwordHasher) :
     IRequestHandler<LoginUserCommand, string>
 {
-    private readonly IUserRepository _userRepository = userRepository;
-    private readonly IJwtService _jwtService = jwtService;
-    private readonly IMapper _mapper = mapper;
-    private readonly IPasswordHasher _passwordHasher = passwordHasher;
 
     public async Task<string> Handle(
         LoginUserCommand command,
         CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetUserByEmailAsync(command.Datos.Email, cancellationToken)
+        var user = await userRepository.GetUserByEmailAsync(command.Datos.Email, cancellationToken)
             ?? throw new NotFoundException("El usuario no existe");
 
-        if (!_passwordHasher.Verify(command.Datos.Password, user.Password))
+        if (!passwordHasher.Verify(command.Datos.Password, user.Password))
             throw new BadRequestException("La contraseña es incorrecta");
 
-        var userMapped = _mapper.Map<User>(user);
-        var token = _jwtService.GenerarToken(userMapped);
+        var userMapped = mapper.Map<User>(user);
+        var token = jwtService.GenerarToken(userMapped);
 
         return token;
     }
