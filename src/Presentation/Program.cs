@@ -12,10 +12,11 @@ builder.LoadEnv();
 // 2. Ensamblar configuración (env primero, luego JSON)
 var cfg = builder.Configuration;
 builder.Services.AddAutoMapper(typeof(AuthDtoMapper));
+builder.Services.AddHttpContextAccessor();
 
 // 3. Registrar capas
 builder.Services.AddInfrastructure(cfg);   // JWT, Mongo, repos, servicios
-builder.Services.AddApplication();         // MediatR, AutoMapper, validaciones
+builder.Services.AddApplication(cfg);         // MediatR, AutoMapper, validaciones
 builder.Services.AddControllers(options =>{options.Conventions.Add(new ApiRoutePrefixConvention("api"));});
 builder.Services.AddEndpointsApiExplorer();
 // 4. Middlewares de API (organizados en Extensions)
