@@ -8,7 +8,7 @@
       "args": [
         "run",
         "--project",
-        "src/Presentation/CMS_NetApi.Web.csproj"
+        "src/Presentation/CMS_NetApi.Presentation.csproj"
       ],
       "problemMatcher": "$msCompile",
       "group": "build",
@@ -42,7 +42,7 @@
         "watch",
         "run",
         "--project",
-        "src/Presentation/CMS_NetApi.Web.csproj"
+        "src/Presentation/CMS_NetApi.Presentation.csproj"
       ],
       "problemMatcher": "$msCompile",
       "group": "build",
