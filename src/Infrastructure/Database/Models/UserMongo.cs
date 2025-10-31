@@ -14,7 +14,7 @@ public class UserMongo
     public string Email { get; set; } = null!;
 
     
-    public string PasswordHash { get; set; } = null!;
+    public string Password { get; set; } = null!;
     public string? Telefono { get; set; }
     public string TipoUsuario { get; set; } = "Sin Asignar";
     public string? RelacionId { get; set; }
