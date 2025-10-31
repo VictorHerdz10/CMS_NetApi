@@ -8,7 +8,7 @@ public static class AuthenticationExtensions
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration cfg)
     {
-        var key = Encoding.UTF8.GetBytes(cfg.GetValueOrEnv("Jwt:SecretKey", "JWT_SECRET_KEY"));
+        var key = Encoding.UTF8.GetBytes(cfg.GetValueOrEnv("JwtSettings:SecretKey", "JWT_SECRET_KEY"));
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
                 {
@@ -18,8 +18,8 @@ public static class AuthenticationExtensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = cfg.GetValueOrEnv("Jwt:Issuer", "JWT_ISSUER"),
-                        ValidAudience = cfg.GetValueOrEnv("Jwt:Audience", "JWT_AUDIENCE"),
+                        ValidIssuer = cfg.GetValueOrEnv("JwtSettings:Issuer", "JWT_ISSUER"),
+                        ValidAudience = cfg.GetValueOrEnv("JwtSettings:Audience", "JWT_AUDIENCE"),
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
                 });
