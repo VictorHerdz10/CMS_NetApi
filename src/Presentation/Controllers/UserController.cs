@@ -1,9 +1,11 @@
 using AutoMapper;
 using CMS_NetApi.Application.Features.Auth.Command;
+using CMS_NetApi.Application.Features.Auth.Query;
 using CMS_NetApi.Application.Models.UserCommand;
 using CMS_NetApi.Presentation.Dtos.Request;
 using CMS_NetApi.Presentation.Dtos.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CMS_NetApi.Presentation.Controllers;
@@ -83,5 +85,38 @@ public class UserController(ISender mediator, IMapper mapper) : ControllerBase
         var token = await mediator.Send(command, cancellationToken);
 
         return Ok(new AuthResponse { Token = token });
+    }
+
+
+    /// <summary>
+    /// Obtiene la información del usuario autenticado
+    /// </summary>
+    /// <remarks>
+    /// Ejemplo de solicitud:
+    /// 
+    ///     GET /api/auth/authenticate
+    ///     Authorization: Bearer {token}
+    /// 
+    /// **Nota:** Requiere autenticación JWT válida.
+    /// </remarks>
+    /// <param name="ct">Token de cancelación</param>
+    /// <returns>Información del usuario autenticado</returns>
+    /// <response code="200">Información del usuario obtenida exitosamente</response>
+    /// <response code="401">No autorizado - Token inválido o expirado</response>
+    /// <response code="404">Usuario no encontrado</response>
+    /// <response code="500">Error interno del servidor</response>
+    [Authorize]
+    [HttpGet("authenticate")]
+    [ProducesResponseType(typeof(AuthenticateResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> Authenticate(CancellationToken ct)
+    {
+        var query = new AuthenticateUserQuery();
+        var user = await mediator.Send(query, ct);
+        
+        var response = mapper.Map<AuthenticateResponseDto>(user);
+        return Ok(response);
     }
 }
