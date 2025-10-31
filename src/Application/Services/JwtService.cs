@@ -20,6 +20,7 @@ public class JwtService(IOptions<JwtSettings> settings) : IJwtService
 
     public string GenerarToken(User user)
     {
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.SecretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
